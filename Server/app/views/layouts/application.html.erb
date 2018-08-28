@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sonar</title>
+    <%= csrf_meta_tags %>
+    <%= favicon_link_tag 'favicon2.ico' %>
+    <%= javascript_include_tag 'sonarJS', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag    'sonar', media: 'all', 'data-turbolinks-track': 'reload' %>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+ 
+  </head>
+
+  <body>
+
+  <div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="/map">Map</a>
+  <a href="/sensor/list">Sensors</a>
+  <a href="/sensor/realtime">RealTime</a>
+  <a href="/sensor/listgroup">Groups</a>
+  <a href="/profile">Account</a>
+  <a href="/home/help">Help</a>
+</div>
+
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+          
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <div class="hidden-xs">
+            <ul class="nav navbar-nav navbar-left" >
+            <%   if user_signed_in? %>
+               <span style="font-size:40px;cursor:pointer;padding-right: 0.5em; padding-left: 0.5em;" onclick="openNav()">&#9776; </span>
+            <%   end %> 
+            </ul>
+            
+            <a class="navbar-brand" href="/home">
+                <%= image_tag("LogoT.png", :alt => "Sonar logo", :height => "50", :width => "150") %>
+            </a>
+            </div>
+            <div class="visible-xs">
+            
+            <a class="navbar-brand" href="/home">
+                <%= image_tag("LogoT.png", :alt => "Sonar logo", :height => "40", :width => "120") %>
+            </a>
+            </div>
+
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="hidden-xs">
+            <ul class="nav navbar-nav navbar-right">
+           
+
+             <%   if user_signed_in?  %>
+             
+                     
+                        <li class="dropdown">
+                        <%   if !@notifications.empty?  %>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-bell" style="color: red; width: 24px !important; height: 24px !important;"></i></a>
+          <% else %>
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-bell" style=" width: 24px !important; height: 24px !important;"></i></a>
+          <% end %>
+          <ul class="dropdown-menu notify-drop">
+            <div class="notify-drop-title">
+              <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6">Notifications</div>
+               
+              </div>
+            </div>
+            <!-- end notify title -->
+            <!-- notify content -->
+            <div class="drop-content">
+               <% @notifications.each do |i| %>
+                    <li>
+                <div class="col-md-1 col-sm-1 col-xs-1"><div class="notify-img"></div></div>
+                <div class="col-md-9 col-sm-9 col-xs-9 pd-l0"><%= link_to i.getName, sensor_path(:id => i.getXdk  ) %>
+                <p><%= i.getMessage %></p>
+                <p class="time"><%= i.getDate %></p>
+                </div>
+              </li>
+                    <% end %>
+            </div>
+            <div class="notify-drop-footer text-center">
+              <a href="/deleteNotifications" method="POST" id="deleteNotifications"><i class="glyphicon glyphicon-eye-open"></i> Close All</a>
+            </div>
+          </ul>
+        </li>
+
+
+                        <li><p class="navbar-text navbar-right" style="padding-top: 0.1em;">Signed in as <%=  current_user.email %><a href="#" class="navbar-link"></a></p></li>
+
+                        <li>
+                           <%=  link_to "Sign Out", destroy_user_session_path, method: :delete %>
+                       </li>
+                    <%   else %>
+                       <li>
+                            <%=  link_to "Sign In", new_user_session_path %>
+                       </li>
+                       <li>
+                            <%=  link_to "Sign Up", new_user_registration_path %>
+                       </li>
+                  <%   end %>                                  
+            </ul>
+            </div>
+             <div class="visible-xs">
+            <ul class="nav navbar-nav navbar-right">
+           
+             <%   if user_signed_in? %>
+
+                         <li class="dropdown">
+                        <%  if !@notifications.empty?  %>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-bell" style="color: red; width: 24px !important; height: 24px !important;"></i></a>
+          <% else %>
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-bell" style=" width: 24px !important; height: 24px !important;"></i></a>
+          <% end %>
+          <ul class="dropdown-menu notify-drop">
+            <div class="notify-drop-title">
+              <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6">Notifications</div>
+               
+              </div>
+            </div>
+            <!-- end notify title -->
+            <!-- notify content -->
+            <div class="drop-content">
+               <% @notifications.each do |i| %>
+                    <li>
+                <div class="col-md-1 col-sm-1 col-xs-1"><div class="notify-img"></div></div>
+                <div class="col-md-9 col-sm-9 col-xs-9 pd-l0"><%= link_to i.getName, sensor_path(:id => i.getXdk  ) %>
+                <p><%= i.getMessage %></p>
+                <p class="time"><%= i.getDate %></p>
+                </div>
+              </li>
+                    <% end %>
+            </div>
+            <div class="notify-drop-footer text-center">
+              <a href=""><i class="glyphicon glyphicon-eye-open"></i> Close All</a>
+            </div>
+          </ul>
+        </li>
+
+
+                        <li> 
+                        <a href="/map">Map</a>
+                      </li>
+                      <li>
+                         <a href="/sensor/list">Sensors</a>
+                      </li>
+                      <li>
+                        <a href="/sensor/realtime">RealTime</a>
+                        <li>
+                          <a href="/sensor/listgroup">Groups</a>
+                        </li>
+                      </li>
+                      <li>
+                        <a href="/profile">Account</a>
+                      </li>
+
+
+                        <li>
+                           <%=  link_to "Sign Out", destroy_user_session_path, method: :delete %>
+                       </li>
+                    <%   else %>
+                       <li>
+                            <%=  link_to "Sign In", new_user_session_path %>
+                       </li>
+                       <li>
+                            <%=  link_to "Sign Up", new_user_registration_path %>
+                       </li>
+                  <%   end %>                                  
+            </ul>
+            </div>          
+        </div>
+    </div>
+</nav>
+
+  
+<main>
+  <div class="sonarcontent">
+    <div class="container-fluid">
+          <%= yield %>
+    </div>
+  </div> 
+</main>
+            
+
+  <footer >
+  <div class="footer">
+    <div class="container-fluid">
+        <div class="row">
+           <div class="col-md-6">
+             <p>SONAR by Grupo5</p>
+           </div>
+           <div class="col-md-6">
+             <div class="pull-right">
+            
+                  <a href="/help">Help</a> .
+                   <a href="/contact">Contact Us</a>
+             
+             </div>
+           </div>
+        </div>
+               
+        <hr>
+           <p>Engenharia Web - Universidade do Minho </p>
+        
+    </div>
+    </div>
+  </footer>
+</body>
+
+</html>

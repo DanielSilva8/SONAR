@@ -1,0 +1,62 @@
+<div class="container">
+<form action="/sensor/listsearch" method="get">
+<div id="custom-search-input">
+                            <div class="input-group col-md-4" style="margin: auto;">
+                                <input type="text" name="search" class=" search-query form-control" placeholder="Search"/>
+                                <span class="input-group-btn">
+                                <<button type="submit" class="btn btn-primary">
+                                        <i class="glyphicon glyphicon-search"></i> 
+                                </button>                                   
+                                </span>
+                            </div>
+                        </div>
+</form>
+                        <hr>
+    
+<table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th class="hidden-xs">
+                            Ref
+                        </th>
+                        <th>
+                            Position(Lat/Lon)
+                        </th>
+                         <th>
+                            
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% @sensors.each do |i| %>
+                    <tr class="active">
+                           
+                        <td>
+                        <%= link_to i.getName, sensor_path(:id => i.getRef  ) %> 
+                           
+                        </td>
+                        <td class="hidden-xs">
+                             <%= i.getRef %>
+                        </td>                       
+                        <td>
+                            <%= i.getLat %>,<br class="visible-xs"><%= i.getLon %>
+                        </td>
+                        <td>
+                            <% if i.getState == 1 %>
+                        	<font color="green">Online</font>
+                            <% else %>
+                            <font color="red">Offline</font>
+                            <% end%>
+
+                        </td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+
+            <hr>
+</div>
+<div style="padding: 12em;"></div>

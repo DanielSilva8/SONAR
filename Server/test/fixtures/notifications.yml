@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  reading: one
+  xdkclient: one
+  message: MyString
+
+two:
+  user: two
+  reading: two
+  xdkclient: two
+  message: MyString

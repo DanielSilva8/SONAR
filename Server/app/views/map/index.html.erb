@@ -1,0 +1,117 @@
+
+<div id="googleMap" style="width:100%;height:650px; position: relative; overflow: hidden;">
+	</div>
+
+
+<script>
+function myMap() {
+	var stylearray=[{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#fcfcfc"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#fcfcfc"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#dddddd"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"hue":"#ff0000"}]},{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"road.highway","elementType":"labels.text.stroke","stylers":[{"hue":"#ff0000"}]},{"featureType":"road.highway.controlled_access","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"road.highway.controlled_access","elementType":"labels.text.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#dddddd"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#eeeeee"}]},{"featureType":"transit.station.airport","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"transit.station.airport","elementType":"geometry.stroke","stylers":[{"hue":"#ff0000"}]},{"featureType":"transit.station.airport","elementType":"labels.text.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"transit.station.airport","elementType":"labels.text.stroke","stylers":[{"hue":"#ff0000"}]}, {
+    "featureType": 'water',
+    "elementType": 'geometry.fill',
+    "stylers": [
+      { "color": '#adc9b8' }
+    ]
+  }];
+
+  var my_var = <%= @lat %>
+
+
+var mapProp= {
+
+    center:new google.maps.LatLng(<%= @lat %>,<%= @lon %>),
+    zoom:12,
+    mapTypeControlOptions: {
+    mapTypeIds: ['Styled'] },
+     disableDefaultUI: true, 
+    mapTypeId: 'Styled'
+  
+};
+var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+
+var styledMapType = new google.maps.StyledMapType(stylearray, { name: 'Styled' });
+  map.mapTypes.set('Styled', styledMapType);
+
+google.maps.event.addDomListener(window, "resize", function() {
+   var center = map.getCenter();
+   google.maps.event.trigger(map, "resize");
+   map.setCenter(center); 
+});
+
+Marker(map);
+
+}
+
+
+
+function addMarker(location, map, info) {
+        marker = new google.maps.Marker({
+            position: location,
+            icon: 'assets/sensorIco.png',
+            map: map
+        });
+        marker.addListener('click', function() {
+              info.open(map, this);
+        });
+    }
+
+function addMarkerGroup(location, map, info) {
+        marker = new google.maps.Marker({
+            position: location,
+            icon: 'assets/groupIco.png',
+            map: map
+        });
+        marker.addListener('click', function() {
+              info.open(map, this);
+        });
+    }    
+    
+    function Marker(map) {
+           /*Sensores*/
+           var array = <%= raw @sensors.to_json.html_safe %>;
+           var info;
+           for (i = 0; i < array.length; i++) { 
+           CentralPark = new google.maps.LatLng(array[i].lat,array[i].lon);
+           info = new google.maps.InfoWindow({
+              content: '<div class="row">'+
+  '<div class="col-md-6">'+
+    '<h4>Sensor: <a href="/sensor/details/'+ array[i].ref+'">'+ array[i].name+'</a></h4>'+
+    '<h5>Ref: '+ array[i].ref+'</h5>'+
+    '</div>'+
+   
+  '<div class="col-md-6">'+
+  state(array[i].state)
+    
+  + '</div>'+
+'</div>'
+             });
+           addMarker(CentralPark, map, info);
+          }  
+
+          /*GROUPS*/      
+           var array2 = <%= raw @groups.to_json.html_safe %>;
+           var info2;
+           for (i = 0; i < array2.length; i++) { 
+           CentralPark2 = new google.maps.LatLng(array2[i].lat,array2[i].lon);
+           info2 = new google.maps.InfoWindow({
+              content: '<div class="row">'+
+  '<div class="col-md-6">'+
+    '<h4>Group: <a href="/group/'+ array2[i].ref +'">'+ array2[i].name+'</a></h4>'+
+    '<h5>Ref: '+ array2[i].ref+'</h5>'+
+    '</div>'+
+'</div>'
+             });
+           addMarkerGroup(CentralPark2, map, info2);
+          }        
+    }
+
+function state(xdk) {
+ if(xdk == 1){
+      return '<h4>State: <font color="green">Online</font></h4>';
+  }else {
+     return '<h4>State: <font color="red">Offline</font></h4>';
+  }
+}
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBn-hxl_aRNofeipf4XGBt0eiwYysbFsHI&callback=myMap"></script>

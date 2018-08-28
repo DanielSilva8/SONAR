@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  xdkclient: one
+  date: 
+  aco: 1.5
+  type: 
+
+two:
+  xdkclient: two
+  date: 
+  aco: 1.5
+  type: 

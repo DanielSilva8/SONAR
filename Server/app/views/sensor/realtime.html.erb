@@ -1,0 +1,79 @@
+
+<div class="container"> 
+	
+<div class="row">
+<% if @state %>
+    <div class="col-md-6">
+  	<h1>Sensor: <%= @name %></h1>
+  	<h2>Ref: <%= @ref %></h2>
+  	</div>
+
+  <div class="col-md-6 " style="text-align: right;">
+  	<% if @stateSensor == 1 %>
+         <h1>State: <font color="green">Online</font></h1>
+  	<% else %>
+         <h1>State: <font color="red">Offline</font></h1>
+  	<% end %>
+  	
+  </div>
+  	<% else %>
+  	
+  	<% end %>
+
+
+</div>
+   
+<div class="row">
+<div id="table-wrapper">
+  <div id="table-scroll">                   
+<table class="table" name="realTable" id="realTable">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th class="hidden-xs">
+                            Reference
+                        </th>
+                        <th class="hidden-xs">
+                            Position(Lat/Lon)
+                        </th> 
+                        <th class="visible-xs">
+                            Position
+                        </th> 
+                        <th>
+                            Last Read
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @sensors.each do |i| %>
+                    <tr class="active">
+                           
+                        <td>
+                        <%= link_to i.getName, sensor_path(:id => i.getRef  ) %>                         
+                        </td>
+                        <td class="hidden-xs">
+                            <%= i.getRef %>
+                        </td>                       
+                        <td>
+                            <%= i.getLat %>,<br class="visible-xs"><%= i.getLon %>
+                        </td>
+                        <td>
+                            <%= i.getAco %>
+                        </td>
+                        <td>
+                            <%= i.getDate %>
+                        </td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+</div>
+</div>
+            <hr>
+</div>
+<div style="padding: 2em;"></div>
